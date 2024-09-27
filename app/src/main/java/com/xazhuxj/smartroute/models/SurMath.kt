@@ -1,10 +1,7 @@
 package com.xazhuxj.smartroute.models
 
-import androidx.annotation.Px
 import kotlin.math.PI
 import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.text.*
 
@@ -103,20 +100,4 @@ fun azimuth(xA: Double, yA: Double, xB : Double, yB:Double ) : Pair<Double, Doub
     return Pair(a, d)
 }
 
-/**
- * 计算测量坐标系下点的平移、旋转、伸缩
- *
- * @param dx x方向的平移量
- * @param dy y方向的平移量
- * @param alpha   α是旧网 x′轴 逆转 至新网 x轴的转角
- * @param k 伸缩比
- * @param xp p点x
- * @param yp p点y
- * @return 新的坐标(x, y)
- */
-fun transformXY(dx:Double, dy:Double, alpha:Double, k:Double, xp: Double, yp:Double): Pair<Double, Double> {
-    val x = dx + k * (xp * cos(alpha) - yp * sin(alpha))
-    val y = dy + k * (xp * sin(alpha) + yp * cos(alpha))
 
-    return Pair(x, y)
-}

@@ -1,6 +1,6 @@
 package com.xazhuxj.smartroute.models
 
-abstract class Curve(val jd: GPoint, val radius: Double) : ICurve {
+abstract class Curve(val JD: Point, val radius: Double) : ICurve {
     /**
      * 偏转角, 单位：弧度
      */

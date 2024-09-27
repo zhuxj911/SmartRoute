@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.xazhuxj.smartroute.ui.home.DataInputMethod" />
+
+        <variable
+            name="viewmodel"
+            type="com.xazhuxj.smartroute.ui.home.HomeViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.home.HomeFragment">
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/text_home"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="8dp"-->
+        <!--            android:layout_marginTop="8dp"-->
+        <!--            android:layout_marginEnd="8dp"-->
+        <!--            android:textAlignment="center"-->
+        <!--            android:textSize="20sp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView_dir"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="已知数据输入方式" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroup_dir"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="3dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radioButton_dir_JD_start_alpha"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="@{viewmodel.dataInputMethod == DataInputMethod.ALPHA}"
+                            android:onClick="@{() -> viewmodel.onAlpha()}"
+                            android:text="交点-起点-偏转角" />
+
+                        <RadioButton
+                            android:id="@+id/radioButton_dir_JD_start_end"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="@{viewmodel.dataInputMethod == DataInputMethod.DIR}"
+                            android:onClick="@{() -> viewmodel.onDir()}"
+                            android:text="交点-起点-终点" />
+                    </RadioGroup>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView_JD"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="曲线交点(JD)" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView_kn0_JD"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="公里桩号:" />
+
+                    <EditText
+                        android:id="@+id/editText_kno_JD"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:maxLines="1"
+                        android:text="@{viewmodel.knoJD.toString()}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView_xJD"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="x=" />
+
+                    <EditText
+                        android:id="@+id/editText_xJD"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:maxLines="1"
+                        android:text="@{viewmodel.xJD.toString()}" />
+
+                    <TextView
+                        android:id="@+id/textView_yJD"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="y=" />
+
+                    <EditText
+                        android:id="@+id/editText_yJD"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:maxLines="1"
+                        android:text="@{viewmodel.yJD.toString()}" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView_start"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="起点(ZY/ZH)" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView_x_start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="x=" />
+
+                    <EditText
+                        android:id="@+id/editText_x_start"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:maxLines="1"
+                        android:text="@{viewmodel.xStart.toString()}" />
+
+                    <TextView
+                        android:id="@+id/textView_y_start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="y=" />
+
+                    <EditText
+                        android:id="@+id/editText_y_start"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:maxLines="1"
+                        android:text="@{viewmodel.yStart.toString()}" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView_end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{viewmodel.dataInputMethod == DataInputMethod.DIR}"
+                    android:gravity="center"
+                    android:text="终点(YZ/HZ)" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView_x_end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{viewmodel.dataInputMethod == DataInputMethod.DIR}"
+                        android:text="x=" />
+
+                    <EditText
+                        android:id="@+id/editText_x_end"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:enabled="@{viewmodel.dataInputMethod == DataInputMethod.DIR}"
+                        android:inputType="numberDecimal"
+                        android:maxLines="1"
+                        android:text="@{viewmodel.xEnd.toString()}" />
+
+                    <TextView
+                        android:id="@+id/textView_y_end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{viewmodel.dataInputMethod == DataInputMethod.DIR}"
+                        android:text="y=" />
+
+                    <EditText
+                        android:id="@+id/editText_y_end"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:enabled="@{viewmodel.dataInputMethod == DataInputMethod.DIR}"
+                        android:inputType="numberDecimal"
+                        android:maxLines="1"
+                        android:text="@{viewmodel.yEnd.toString()}" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView_caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="曲线参数(±DDD.MMSSS)" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView_alpha"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{viewmodel.dataInputMethod == DataInputMethod.ALPHA}"
+                        android:text="偏转角(右+/左-):" />
+
+                    <EditText
+                        android:id="@+id/edit_alpha"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:enabled="@{viewmodel.dataInputMethod == DataInputMethod.ALPHA}"
+                        android:hint="@string/editText_alpha_hint"
+                        android:inputType="numberDecimal"
+                        android:maxLines="1"
+                        android:text="@{viewmodel.alpha.toString()}" />
+
+                    <Button
+                        android:id="@+id/button_calculate_alpha"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{viewmodel.dataInputMethod == DataInputMethod.DIR}"
+                        android:onClick="@{() -> viewmodel.onCalculateAlpha()}"
+                        android:text="算偏转角" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView_R"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="圆曲线半径:" />
+
+                    <EditText
+                        android:id="@+id/edit_R"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:maxLines="1"
+                        android:text="@{viewmodel.radius.toString()}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView_l0"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="缓和曲线长:" />
+
+                    <EditText
+                        android:id="@+id/edit_l0"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="圆曲线：0，缓和曲线：>0"
+                        android:inputType="numberDecimal"
+                        android:maxLines="1"
+                        android:text="@{viewmodel.l0.toString()}" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView_anypoint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="任意曲线点坐标计算" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView_kn0_anypoint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="桩号=" />
+
+                    <EditText
+                        android:id="@+id/editText_kno_anypoint"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:maxLines="1"
+                        android:text="@{viewmodel.kno_anypoint.toString()}" />
+
+                    <Button
+                        android:id="@+id/button_xy_anypoint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{() -> viewmodel.onCalculateSinglePoint()}"
+                        android:text="单个曲线点计算" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView_allpoints"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="批量曲线点坐标计算" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView_length_allpoints"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="里程间距" />
+
+                    <EditText
+                        android:id="@+id/editText_length_allpoints"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:maxLines="1"
+                        android:text="@{viewmodel.length.toString()}" />
+
+                    <Button
+                        android:id="@+id/button_xy_allpoints"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{() -> viewmodel.onCalculateAllPoints()}"
+                        android:text="整体要素计算" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
