@@ -5,13 +5,13 @@ import kotlin.math.*
  * 缓和曲线
  *
  */
-class TransitionCurve private constructor(jd: GPoint, radius: Double, val l0:Double) : Curve(jd, radius) {
-    val zh = GPoint(note ="ZH") ////参数4：直缓点的x,y
+class TransitionCurve private constructor(jd: Point, radius: Double, val l0:Double) : Curve(jd, radius) {
+    val zh = Point(note ="ZH") ////参数4：直缓点的x,y
     //以下为计算参数
-    val hy = GPoint(note ="HY" )
-    val qz = GPoint(note ="QZ" )
-    val yh = GPoint(note ="YH" ) //圆缓点在左切线坐标系中的坐标
-    val hz = GPoint(note ="HZ" ) ////在ZH点坐标系中的坐标
+    val hy = Point(note ="HY" )
+    val qz = Point(note ="QZ" )
+    val yh = Point(note ="YH" ) //圆缓点在左切线坐标系中的坐标
+    val hz = Point(note ="HZ" ) ////在ZH点坐标系中的坐标
 
     override val T //切线长
         get() = m + (radius + P) * tan(alpha * 0.5)
@@ -35,7 +35,7 @@ class TransitionCurve private constructor(jd: GPoint, radius: Double, val l0:Dou
         jd.note="JD"
     }
 
-    constructor (start: GPoint, jd: GPoint, end: GPoint, radius:Double, l0:Double) : this(jd, radius, l0) {
+    constructor (start: Point, jd: Point, end: Point, radius:Double, l0:Double) : this(jd, radius, l0) {
         //判断 start -> JD -> end 是偏右？ 还是 偏左？
         flag = isRight(start, jd, end)
 
@@ -83,7 +83,7 @@ class TransitionCurve private constructor(jd: GPoint, radius: Double, val l0:Dou
         }
     }
 
-    constructor (start: GPoint, jd: GPoint, radius:Double, l0:Double, alpha:Double) : this(jd, radius, l0) {
+    constructor (start: Point, jd: Point, radius:Double, l0:Double, alpha:Double) : this(jd, radius, l0) {
         flag = if (alpha >= 0.0) 1 else -1
         this.alpha = flag * dmsToRadian(alpha)
 
@@ -155,7 +155,7 @@ class TransitionCurve private constructor(jd: GPoint, radius: Double, val l0:Dou
      * @param li 曲线长
      * @param pt 计算点
      */
-    private fun calHXY(li: Double, pt: GPoint) {
+    private fun calHXY(li: Double, pt: Point) {
         pt.x = li - li.pow(5) / (radius*l0).pow(2) / 40 + li.pow(9) / (radius*l0).pow( 4) / 3456
         pt.y = flag *(
                 (li.pow(3) / 6 / (radius * l0)
@@ -170,7 +170,7 @@ class TransitionCurve private constructor(jd: GPoint, radius: Double, val l0:Dou
      * @param li 曲线长
      * @param pt 计算点
      */
-    private fun calRXY(li: Double, pt: GPoint) {
+    private fun calRXY(li: Double, pt: Point) {
         val betai = (li - l0) / radius + beta0
         pt.x = radius * sin(betai) + m
         pt.y = flag * (radius * (1 - cos(betai)) + P)
@@ -181,7 +181,7 @@ class TransitionCurve private constructor(jd: GPoint, radius: Double, val l0:Dou
      *
      * @param pt 计算点
      */
-    private fun calPointInCurve(pt:GPoint) {
+    private fun calPointInCurve(pt:Point) {
 //        if (pt.kNo < ZH.kNo || pt.kNo > HZ.kNo)
 //            throw RangeException(-1, "计算点的里程桩号:${pt.kNo} 不在该缓和曲线的范围内:${HZ.kNo}-${ZH.kNo}")
 
@@ -206,7 +206,7 @@ class TransitionCurve private constructor(jd: GPoint, radius: Double, val l0:Dou
      * @param kno 里程桩号
      * @return 计算点
      */
-    override fun calPointOnCurveByKno(kno: Double): GPoint?{
+    override fun calPointOnCurveByKno(kno: Double): Point?{
         if (kno < zh.kNo || kno > hz.kNo) return null //不是圆曲线上有效范围
 
         if (abs(kno - zh.kNo) < 0.001) {
@@ -221,12 +221,12 @@ class TransitionCurve private constructor(jd: GPoint, radius: Double, val l0:Dou
             return hz
         }
 
-        return GPoint(kNo = kno).also(::calPointInCurve)
+        return Point(kNo = kno).also(::calPointInCurve)
     }
 
 
-    override fun calAllPoints(length: Double): ArrayList<GPoint>{
-        val points = ArrayList<GPoint>()
+    override fun calAllPoints(length: Double): ArrayList<Point>{
+        val points = ArrayList<Point>()
 
         points.add(zh)
 
@@ -234,7 +234,7 @@ class TransitionCurve private constructor(jd: GPoint, radius: Double, val l0:Dou
         var kno = zh.kNo
         while (kno + length < hy.kNo) {
             kno += length
-            points.add(GPoint(kNo = kno).also(::calPointInCurve))
+            points.add(Point(kNo = kno).also(::calPointInCurve))
         }
 
         points.add(hy)
@@ -243,7 +243,7 @@ class TransitionCurve private constructor(jd: GPoint, radius: Double, val l0:Dou
         kno = hy.kNo
         while (kno + length < qz.kNo) {
             kno += length
-            points.add(GPoint(kNo = kno).also(::calPointInCurve))
+            points.add(Point(kNo = kno).also(::calPointInCurve))
         }
 
         points.add(qz)
@@ -252,7 +252,7 @@ class TransitionCurve private constructor(jd: GPoint, radius: Double, val l0:Dou
         kno = qz.kNo
         while (kno + length < yh.kNo) {
             kno += length
-            points.add(GPoint(kNo = kno).also(::calPointInCurve))
+            points.add(Point(kNo = kno).also(::calPointInCurve))
         }
         points.add(yh)
 
@@ -260,7 +260,7 @@ class TransitionCurve private constructor(jd: GPoint, radius: Double, val l0:Dou
         kno = yh.kNo
         while (kno + length < hz.kNo) {
             kno += length
-            points.add(GPoint(kNo = kno).also(::calPointInCurve))
+            points.add(Point(kNo = kno).also(::calPointInCurve))
         }
         points.add(hz)
 
@@ -272,7 +272,7 @@ class TransitionCurve private constructor(jd: GPoint, radius: Double, val l0:Dou
      *
      * @param pt 转换计算点
      */
-    fun HZtoZH(pt:GPoint) {
+    fun HZtoZH(pt:Point) {
         val xi = T*(1+cos(alpha)) - pt.x * cos(alpha) - pt.y * sin(alpha)
         val yi = T * sin(alpha) - pt.x * sin(alpha) + pt.y * cos(alpha)
         pt.x = xi; pt.y = yi
