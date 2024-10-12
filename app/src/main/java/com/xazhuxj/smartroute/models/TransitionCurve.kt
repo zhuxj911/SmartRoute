@@ -6,13 +6,13 @@ import kotlin.math.*
  * 缓和曲线
  *
  */
-class TransitionCurve private constructor(JD: Point, radius: Double, val l0:Double) : Curve(JD, radius) {
-    val ZH = Point(note ="ZH") ////参数4：直缓点的x,y
+class TransitionCurve private constructor(jd: Point, radius: Double, val l0:Double) : Curve(jd, radius) {
+    val zh = Point(note ="ZH") ////参数4：直缓点的x,y
     //以下为计算参数
-    val HY = Point(note ="HY" )
-    val QZ = Point(note ="QZ" )
-    val YH = Point(note ="YH" ) //圆缓点在左切线坐标系中的坐标
-    val HZ = Point(note ="HZ" ) ////在ZH点坐标系中的坐标
+    val hy = Point(note ="HY" )
+    val qz = Point(note ="QZ" )
+    val yh = Point(note ="YH" ) //圆缓点在左切线坐标系中的坐标
+    val hz = Point(note ="HZ" ) ////在ZH点坐标系中的坐标
 
     override val T //切线长
         get() = m + (radius + P) * tan(alpha * 0.5)
@@ -33,7 +33,7 @@ class TransitionCurve private constructor(JD: Point, radius: Double, val l0:Doub
         get() = l0.pow(2) / 24.0 / radius
 
     init {
-        JD.note="JD"
+        jd.note="JD"
     }
 
     constructor (start: Point, JD: Point, radius:Double, l0:Double, alpha:Double) : this(JD, radius, l0) {
@@ -48,46 +48,46 @@ class TransitionCurve private constructor(JD: Point, radius: Double, val l0:Doub
         if(a23 < 0) a23 += 2*PI
         if(a23 >= 2 * PI) a23 -= 2*PI
 
-        with(ZH){
+        with(zh){
             kNo = JD.kNo - T
             x = JD.x - T * cos(a12)
             y = JD.y - T *sin(a12)
         }
 
-        HZ.kNo = ZH.kNo + L
-        HY.kNo = ZH.kNo + l0
-        QZ.kNo = ZH.kNo + 0.5 * L
-        YH.kNo = HZ.kNo - l0
+        hz.kNo = zh.kNo + L
+        hy.kNo = zh.kNo + l0
+        qz.kNo = zh.kNo + 0.5 * L
+        yh.kNo = hz.kNo - l0
 
-        with(HZ){
+        with(hz){
             x = JD.x + T * cos(a23)
             y = JD.y + T *sin(a23)
         }
 
-        with(HY){//计算 HY 点坐标
+        with(hy){//计算 HY 点坐标
             calHXY(l0, this)
-            transformXY(ZH, alpha0, this)
+            transformXY(zh, alpha0, this)
         }
 
-        with(QZ){
-            calRXY(kNo - ZH.kNo, this)
-            transformXY(ZH, alpha0, this)
+        with(qz){
+            calRXY(kNo - zh.kNo, this)
+            transformXY(zh, alpha0, this)
         }
 
-        with(YH){
+        with(yh){
             calHXY(l0, this)
             HZtoZH(this)
-            transformXY(ZH, alpha0, this)
+            transformXY(zh, alpha0, this)
         }
     }
 
     override fun toString(): String {
-        return  "$JD" +
-                "$ZH" +
-                "$HY" +
-                "$QZ" +
-                "$YH" +
-                "$HZ" +
+        return  "$jd" +
+                "$zh" +
+                "$hy" +
+                "$qz" +
+                "$yh" +
+                "$hz" +
                 "R=$radius\n" +
                 "l0=$l0\n" +
                 "α=${radianToDmsString(alpha)},${if(flag==1) "右偏" else "左偏"}\n" +
@@ -138,19 +138,19 @@ class TransitionCurve private constructor(JD: Point, radius: Double, val l0:Doub
 //        if (pt.kNo < ZH.kNo || pt.kNo > HZ.kNo)
 //            throw RangeException(-1, "计算点的里程桩号:${pt.kNo} 不在该缓和曲线的范围内:${HZ.kNo}-${ZH.kNo}")
 
-        val li = pt.kNo - ZH.kNo
-        if (pt.kNo in ZH.kNo .. HY.kNo) { //ZH --> HY 缓和曲线段
+        val li = pt.kNo - zh.kNo
+        if (pt.kNo in zh.kNo .. hy.kNo) { //ZH --> HY 缓和曲线段
             calHXY(li, pt)
-        } else if (pt.kNo > HY.kNo && pt.kNo <= QZ.kNo) { //HY --> QZ 圆曲线段
+        } else if (pt.kNo > hy.kNo && pt.kNo <= qz.kNo) { //HY --> QZ 圆曲线段
             calRXY(li, pt)
-        } else if (pt.kNo > QZ.kNo && pt.kNo <= YH.kNo) { //QZ --> YH 右边的圆曲线段{
+        } else if (pt.kNo > qz.kNo && pt.kNo <= yh.kNo) { //QZ --> YH 右边的圆曲线段{
             calRXY(L - li, pt)
             HZtoZH(pt)
         } else{ //(li > (L - l0) && li <=L) YH --> HZ 右边的缓和曲线段  (li > (L - l0) && li <=L)
             calHXY(L - li, pt)
             HZtoZH(pt)
         }
-        transformXY(ZH, alpha0, pt)
+        transformXY(zh, alpha0, pt)
     }
 
     /**
@@ -160,62 +160,62 @@ class TransitionCurve private constructor(JD: Point, radius: Double, val l0:Doub
      * @return 计算点
      */
     override fun calPointOnCurveByKno(kno: Double): Point?{
-        if (kno < ZH.kNo || kno > HZ.kNo) return null //不是圆曲线上有效范围
+        if (kno < zh.kNo || kno > hz.kNo) return null //不是圆曲线上有效范围
 
-        if (abs(kno - ZH.kNo) < 0.001) {
-            return ZH
-        } else if (abs(kno - HY.kNo) < 0.001) {
-            return HY
-        } else if (abs(kno - QZ.kNo) < 0.001) {
-            return QZ
-        } else if (abs(kno - YH.kNo) < 0.001) {
-            return YH
-        } else if (abs(kno - HZ.kNo) < 0.001) {
-            return HZ
+        if (abs(kno - zh.kNo) < 0.001) {
+            return zh
+        } else if (abs(kno - hy.kNo) < 0.001) {
+            return hy
+        } else if (abs(kno - qz.kNo) < 0.001) {
+            return qz
+        } else if (abs(kno - yh.kNo) < 0.001) {
+            return yh
+        } else if (abs(kno - hz.kNo) < 0.001) {
+            return hz
         }
 
         return Point(kNo = kno).also(::calPointInCurve)
     }
 
 
-    override fun calAllPoints(length: Double): MutableList<Point>{
-        val points: MutableList<Point> = ArrayList<Point>()
+    override fun calAllPoints(length: Double): ArrayList<Point>{
+        val points = ArrayList<Point>()
 
-        points.add(ZH)
+        points.add(zh)
 
         //ZH --> HY
-        var kno = ZH.kNo
-        while (kno + length < HY.kNo) {
+        var kno = zh.kNo
+        while (kno + length < hy.kNo) {
             kno += length
             points.add(Point(kNo = kno).also(::calPointInCurve))
         }
 
-        points.add(HY)
+        points.add(hy)
 
         //HY --> QZ
-        kno = HY.kNo
-        while (kno + length < QZ.kNo) {
+        kno = hy.kNo
+        while (kno + length < qz.kNo) {
             kno += length
             points.add(Point(kNo = kno).also(::calPointInCurve))
         }
 
-        points.add(QZ)
+        points.add(qz)
 
         //QZ --> YH
-        kno = QZ.kNo
-        while (kno + length < YH.kNo) {
+        kno = qz.kNo
+        while (kno + length < yh.kNo) {
             kno += length
             points.add(Point(kNo = kno).also(::calPointInCurve))
         }
-        points.add(YH)
+        points.add(yh)
 
         //YH--> HZ
-        kno = YH.kNo
-        while (kno + length < HZ.kNo) {
+        kno = yh.kNo
+        while (kno + length < hz.kNo) {
             kno += length
             points.add(Point(kNo = kno).also(::calPointInCurve))
         }
-        points.add(HZ)
+        points.add(hz)
 
         return points
     }

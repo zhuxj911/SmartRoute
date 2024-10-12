@@ -6,6 +6,7 @@
     <data>
 
         <import type="com.xazhuxj.smartroute.ui.home.DataInputMethod" />
+        <import type="com.xazhuxj.smartroute.utils.Converter" />
 
         <variable
             name="viewmodel"
@@ -108,7 +109,8 @@
                         android:layout_weight="1"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:text="@{viewmodel.knoJD.toString()}" />
+                        android:text="@={Converter.doubleToString(viewmodel.knoJD)}"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -128,7 +130,8 @@
                         android:layout_weight="1"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:text="@{viewmodel.xJD.toString()}" />
+                        android:text="@={Converter.doubleToString(viewmodel.xJD)}"
+                        />
 
                     <TextView
                         android:id="@+id/textView_yJD"
@@ -143,7 +146,8 @@
                         android:layout_weight="1"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:text="@{viewmodel.yJD.toString()}" />
+                        android:text="@={Converter.doubleToString(viewmodel.yJD)}"
+                        />
                 </LinearLayout>
 
                 <TextView
@@ -171,7 +175,8 @@
                         android:layout_weight="1"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:text="@{viewmodel.xStart.toString()}" />
+                        android:text="@={Converter.doubleToString(viewmodel.xStart)}"
+                        />
 
                     <TextView
                         android:id="@+id/textView_y_start"
@@ -186,7 +191,8 @@
                         android:layout_weight="1"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:text="@{viewmodel.yStart.toString()}" />
+                        android:text="@={Converter.doubleToString(viewmodel.yStart)}"
+                        />
                 </LinearLayout>
 
                 <TextView
@@ -217,7 +223,8 @@
                         android:enabled="@{viewmodel.dataInputMethod == DataInputMethod.DIR}"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:text="@{viewmodel.xEnd.toString()}" />
+                        android:text="@={Converter.doubleToString(viewmodel.xEnd)}"
+                        />
 
                     <TextView
                         android:id="@+id/textView_y_end"
@@ -234,7 +241,8 @@
                         android:enabled="@{viewmodel.dataInputMethod == DataInputMethod.DIR}"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:text="@{viewmodel.yEnd.toString()}" />
+                        android:text="@={Converter.doubleToString(viewmodel.yEnd)}"
+                        />
                 </LinearLayout>
 
                 <TextView
@@ -252,7 +260,6 @@
                         android:id="@+id/textView_alpha"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:enabled="@{viewmodel.dataInputMethod == DataInputMethod.ALPHA}"
                         android:text="偏转角(右+/左-):" />
 
                     <EditText
@@ -260,11 +267,11 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:enabled="@{viewmodel.dataInputMethod == DataInputMethod.ALPHA}"
                         android:hint="@string/editText_alpha_hint"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:text="@{viewmodel.alpha.toString()}" />
+                        android:text="@={Converter.doubleToString(viewmodel.alpha)}"
+                        />
 
                     <Button
                         android:id="@+id/button_calculate_alpha"
@@ -292,7 +299,8 @@
                         android:layout_weight="1"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:text="@{viewmodel.radius.toString()}" />
+                        android:text="@={Converter.doubleToString(viewmodel.radius)}"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -313,7 +321,8 @@
                         android:hint="圆曲线：0，缓和曲线：>0"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:text="@{viewmodel.l0.toString()}" />
+                        android:text="@={Converter.doubleToString(viewmodel.l0)}"
+                        />
                 </LinearLayout>
 
                 <TextView
@@ -340,13 +349,13 @@
                         android:layout_weight="1"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:text="@{viewmodel.kno_anypoint.toString()}" />
+                        android:text="@={Converter.doubleToString(viewmodel.kno_anypoint)}"
+                        />
 
                     <Button
                         android:id="@+id/button_xy_anypoint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewmodel.onCalculateSinglePoint()}"
                         android:text="单个曲线点计算" />
                 </LinearLayout>
 
@@ -374,16 +383,36 @@
                         android:layout_weight="1"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:text="@{viewmodel.length.toString()}" />
+                        android:text="@={Converter.doubleToString(viewmodel.length)}"
+                        />
 
                     <Button
                         android:id="@+id/button_xy_allpoints"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewmodel.onCalculateAllPoints()}"
                         android:text="整体要素计算" />
                 </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_margin="3dp"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/button_circle_curve_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:onClick="@{()->viewmodel.onSetCircleCurveData()}"
+                    android:text="设置圆曲线数据" />
+                <Button
+                    android:id="@+id/button_transition_curve_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:onClick="@{()->viewmodel.onSetTransitionCurveData()}"
+                    android:text="设置缓和曲线数据" />
+            </LinearLayout>
             </LinearLayout>
         </ScrollView>
 

@@ -1,57 +1,59 @@
 package com.xazhuxj.smartroute.ui.home
 
-import androidx.lifecycle.LiveData
+import androidx.databinding.ObservableDouble
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.xazhuxj.smartroute.models.CircleCurve
+import com.xazhuxj.smartroute.models.ICurve
 import com.xazhuxj.smartroute.models.Point
+import com.xazhuxj.smartroute.models.TransitionCurve
 import com.xazhuxj.smartroute.models.calculateAlpha
 import com.xazhuxj.smartroute.models.radianToDms
+import com.xazhuxj.smartroute.utils.ObservableViewModel
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel : ObservableViewModel() {
 
-//    private val _text = MutableLiveData<String>().apply {
-//        value = "This is home Fragment"
-//    }
-//    val text: LiveData<String> = _text
+    lateinit var route: ICurve
+    lateinit var ptList: ArrayList<Point>
+
 
     private val _dataInputMethod = MutableLiveData(DataInputMethod.DIR)
     val dataInputMethod = _dataInputMethod
 
-    private val _alpha = MutableLiveData(10.182)
-    val alpha: LiveData<Double> = _alpha
+    private var _alpha = ObservableDouble(10.182)
+    var alpha: ObservableDouble = _alpha
 
-    private val _radius = MutableLiveData(1000.0)
-    val radius: LiveData<Double> = _radius
+    private var _radius = ObservableDouble(1000.0)
+    var radius: ObservableDouble = _radius
 
-    private val _l0 = MutableLiveData(80.0)
-    val l0: LiveData<Double> = _l0
+    private var _l0 = ObservableDouble(80.0)
+    var l0: ObservableDouble = _l0
 
-    private val _knoJD = MutableLiveData(5330.198)
-    val knoJD: LiveData<Double> = _knoJD
+    private var _knoJD = ObservableDouble(5330.198)
+    var knoJD: ObservableDouble = _knoJD
 
-    private val _xJD = MutableLiveData(3088386.436)
-    val xJD: LiveData<Double> = _xJD
+    private var _xJD = ObservableDouble(3088386.436)
+    var xJD: ObservableDouble = _xJD
 
-    private val _yJD = MutableLiveData(66798.566)
-    val yJD: LiveData<Double> = _yJD
+    private var _yJD = ObservableDouble(66798.566)
+    var yJD: ObservableDouble = _yJD
 
-    private val _xStart = MutableLiveData(3088256.238)
-    val xStart: LiveData<Double> = _xStart
+    private var _xStart = ObservableDouble(3088256.238)
+    var xStart: ObservableDouble = _xStart
 
-    private val _yStart = MutableLiveData(66798.566)
-    val yStart: LiveData<Double> = _yStart
+    private var _yStart = ObservableDouble(66798.566)
+    var yStart: ObservableDouble = _yStart
 
-    private val _xEnd = MutableLiveData(3088514.534)
-    val xEnd: LiveData<Double> = _xEnd
+    private var _xEnd = ObservableDouble(3088514.534)
+    var xEnd: ObservableDouble = _xEnd
 
-    private val _yEnd = MutableLiveData(66821.858)
-    val yEnd: LiveData<Double> = _yEnd
+    private var _yEnd = ObservableDouble(66821.858)
+    var yEnd: ObservableDouble = _yEnd
 
-    private val _knoAnypoint = MutableLiveData(5359.866)
-    val kno_anypoint: LiveData<Double> = _knoAnypoint
+    private var _knoAnypoint = ObservableDouble(5359.866)
+    var kno_anypoint: ObservableDouble = _knoAnypoint
 
-    private val _length = MutableLiveData(20.0)
-    val length: LiveData<Double> = _length
+    private var _length = ObservableDouble(20.0)
+    var length: ObservableDouble = _length
 
     fun onAlpha() {
         _dataInputMethod.value = DataInputMethod.ALPHA
@@ -65,21 +67,89 @@ class HomeViewModel : ViewModel() {
      * 计算线路偏转角α， 以简化线路的生成方式
      */
     fun onCalculateAlpha() {
-        _alpha.value = calculateAlpha(
-            Point(x=xStart.value!!, y=yStart.value!!), //误写成  GPoint(xStart.value!!, yStart.value!!)， 导致y值一直为0
-            Point(x=xJD.value!!, y=yJD.value!!),
-            Point(x=xEnd.value!!, y=yEnd.value!!),
+        val radAlpha = calculateAlpha(
+            Point(
+                x = xStart.get(),
+                y = yStart.get()
+            ), //误写成  GPoint(xStart.value!!, yStart.value!!)， 导致y值一直为0
+            Point(x = xJD.get(), y = yJD.get()),
+            Point(x = xEnd.get(), y = yEnd.get()),
         )
 
-        _alpha.value = radianToDms(_alpha.value!!) //将其转换为界面显示的 浮点数 度分秒 形式
+        alpha.set(radianToDms(radAlpha)) //将其转换为界面显示的 浮点数 度分秒 形式
     }
 
     fun onCalculateSinglePoint() {
+        //单点坐标计算
+        ptList = ArrayList()
+        val jd = Point(knoJD.get(), xJD.get(), yJD.get())
+        val start = Point(0.0, xStart.get(), yStart.get())
 
+        if (l0.get() <= 0) { //圆曲线
+
+            route = CircleCurve(start, jd, radius.get(), alpha.get())
+            val pt = route.calPointOnCurveByKno(kno_anypoint.get())
+            pt?.let { ptList.add(it) }
+
+        } else { //缓和曲线
+            route = TransitionCurve(
+                start,
+                jd,
+                radius.get(),
+                l0.get(),
+                alpha.get()
+            )
+
+            val pt = route.calPointOnCurveByKno(kno_anypoint.get())
+            pt?.let { ptList.add(pt) }
+        }
     }
 
-    fun onCalculateAllPoints() {
 
+    fun onCalculateAllPoints() {
+        // 在这里做耗时操作
+        //批量坐标计算，间隔默认为20
+        ptList = ArrayList()
+        val jd = Point(knoJD.get(), xJD.get(), yJD.get())
+        val start = Point(0.0, xStart.get(), yStart.get())
+
+        if (l0.get() <= 0) { //圆曲线
+            route = CircleCurve(start, jd, radius.get(), alpha.get())
+            ptList = route.calAllPoints(length.get())
+        } else { //缓和曲线
+            route = TransitionCurve(start, jd, radius.get(), l0.get(), alpha.get())
+            ptList = route.calAllPoints(length.get())
+        }
+    }
+
+    fun onSetCircleCurveData() {
+        alpha.set(40.2018)
+        radius.set(120.0)
+        l0.set(0.0)
+        knoJD.set(3135.12)
+        xJD.set(6848.320)
+        yJD.set(5634.240)
+        xStart.set(6821.350)
+        yStart.set(5599.3759)
+        xEnd.set(6846.31)
+        yEnd.set(5678.27)
+        kno_anypoint.set(3100.0)
+        length.set(10.0)
+    }
+
+    fun onSetTransitionCurveData() {
+        alpha.set(10.182)
+        radius.set(1000.0)
+        l0.set(80.0)
+        knoJD.set(5330.198)
+        xJD.set(3088386.436)
+        yJD.set(66798.566)
+        xStart.set(3088256.238)
+        yStart.set(66798.566)
+        xEnd.set(3088514.534)
+        yEnd.set(66821.858)
+        kno_anypoint.set(5359.866)
+        length.set(20.0)
     }
 }
 

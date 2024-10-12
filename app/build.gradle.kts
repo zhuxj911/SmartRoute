@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId = "com.xazhuxj.smartroute"
         minSdk = 29
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -59,5 +59,5 @@ dependencies {
 
     //使用Apache Comons Lang库中的NumberUtils类实现字符串转换为都变了类型的判断
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    implementation("org.apache.commons:commons-lang3:3.14.0") // 2024.9.25 3.17.0
+    implementation("org.apache.commons:commons-lang3:3.17.0") // 2024.9.25 3.17.0
 }

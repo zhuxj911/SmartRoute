@@ -1,4 +1,4 @@
-package com.xazhuxj.smartroute
+package com.example.smartroute
 
 import org.junit.Test
 

@@ -4,6 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import kotlin.math.*
 
+/**
+ * 可通过 @Parcelize 实现 需插件  kotlin-android-extensions
+ */
 data class Point(var kNo: Double = 0.0,
                  var x: Double = 0.0,
                  var y: Double = 0.0,
@@ -50,7 +53,6 @@ data class Point(var kNo: Double = 0.0,
     }
 }
 
-
 fun azimuth(pA : Point, pB: Point ) = azimuth(pA.x, pA.y, pB.x, pB.y).first
 
 fun transformXY(xo:Double, yo:Double, beta:Double, p:Point){
@@ -81,13 +83,13 @@ else  //(p2.y-p1.y)*(p3.x-p2.x) > (p3.y-p2.y)*(p2.x-p1.x)
 /**
  * 计算三点的偏转角α， 右+/左-
  */
-fun calculateAlpha(start: Point, JD: Point, end: Point) : Double {
+fun calculateAlpha(start: Point, jd: Point, end: Point) : Double {
     //判断 start -> JD -> end 是偏右？ 还是 偏左？
-    val flag = isRight(start, JD, end)
+    val flag = isRight(start, jd, end)
 
     //计算偏转角
-    val a12 = azimuth(start, JD)
-    val a23 = azimuth(JD, end)
+    val a12 = azimuth(start, jd)
+    val a23 = azimuth(jd, end)
 
     var alpha = if(flag == 1) {
         a23 - a12
