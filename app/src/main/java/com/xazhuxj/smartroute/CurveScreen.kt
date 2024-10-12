@@ -37,7 +37,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.xazhuxj.smartroute.models.CircleCurve
-import com.xazhuxj.smartroute.models.GPoint
+import com.xazhuxj.smartroute.models.Point
 import com.xazhuxj.smartroute.models.TransitionCurve
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.math.NumberUtils
@@ -252,8 +252,8 @@ fun CurveScreen(onNavigateToResultScreen: () -> Unit, modifier: Modifier = Modif
                         {
                             val r = if (dirJdStartAlpha.value)
                                 CircleCurve(
-                                    GPoint(x = xStart.doubleValue, y = yStart.doubleValue),
-                                    GPoint(
+                                    Point(x = xStart.doubleValue, y = yStart.doubleValue),
+                                    Point(
                                         kNo = kJD.doubleValue,
                                         x = xJD.doubleValue,
                                         y = yJD.doubleValue
@@ -263,13 +263,13 @@ fun CurveScreen(onNavigateToResultScreen: () -> Unit, modifier: Modifier = Modif
                                 )
                             else
                                 CircleCurve(
-                                    GPoint(x = xStart.doubleValue, y = yStart.doubleValue),
-                                    GPoint(
+                                    Point(x = xStart.doubleValue, y = yStart.doubleValue),
+                                    Point(
                                         kNo = kJD.doubleValue,
                                         x = xJD.doubleValue,
                                         y = yJD.doubleValue
                                     ),
-                                    GPoint(x = xEnd.doubleValue, y = yEnd.doubleValue),
+                                    Point(x = xEnd.doubleValue, y = yEnd.doubleValue),
                                     radius = r0.doubleValue
                                 )
 
@@ -280,8 +280,8 @@ fun CurveScreen(onNavigateToResultScreen: () -> Unit, modifier: Modifier = Modif
                         } else { //缓和曲线
                             val r = if (dirJdStartAlpha.value)
                                 TransitionCurve(
-                                    GPoint(x = xStart.doubleValue, y = yStart.doubleValue),
-                                    GPoint(
+                                    Point(x = xStart.doubleValue, y = yStart.doubleValue),
+                                    Point(
                                         kNo = kJD.doubleValue,
                                         x = xJD.doubleValue,
                                         y = yJD.doubleValue
@@ -292,13 +292,13 @@ fun CurveScreen(onNavigateToResultScreen: () -> Unit, modifier: Modifier = Modif
                                 )
                             else
                                 TransitionCurve(
-                                    GPoint(x = xStart.doubleValue, y = yStart.doubleValue),
-                                    GPoint(
+                                    Point(x = xStart.doubleValue, y = yStart.doubleValue),
+                                    Point(
                                         kNo = kJD.doubleValue,
                                         x = xJD.doubleValue,
                                         y = yJD.doubleValue
                                     ),
-                                    GPoint(x = xEnd.doubleValue, y = yEnd.doubleValue),
+                                    Point(x = xEnd.doubleValue, y = yEnd.doubleValue),
                                     radius = r0.doubleValue,
                                     l0 = l0.doubleValue
                                 )

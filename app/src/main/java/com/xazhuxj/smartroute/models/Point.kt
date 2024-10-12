@@ -2,12 +2,11 @@ package com.xazhuxj.smartroute.models
 
 import android.os.Parcel
 import android.os.Parcelable
-import kotlin.math.*
 
-data class GPoint(var kNo: Double = 0.0,
-                  var x: Double = 0.0,
-                  var y: Double = 0.0,
-                  var note : String? = null) : Parcelable {
+data class Point(var kNo: Double = 0.0,
+                 var x: Double = 0.0,
+                 var y: Double = 0.0,
+                 var note : String? = null) : Parcelable {
 
     /**
      * 输出公里账号信息，将浮点数形式的里程输出为 K3+91.042 形式
@@ -42,20 +41,20 @@ data class GPoint(var kNo: Double = 0.0,
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<GPoint> {
-        override fun createFromParcel(parcel: Parcel): GPoint {
-            return GPoint(parcel)
+    companion object CREATOR : Parcelable.Creator<Point> {
+        override fun createFromParcel(parcel: Parcel): Point {
+            return Point(parcel)
         }
 
-        override fun newArray(size: Int): Array<GPoint?> {
+        override fun newArray(size: Int): Array<Point?> {
             return arrayOfNulls(size)
         }
     }
 }
 
-fun azimuth(pA : GPoint, pB: GPoint ) = azimuth(pA.x, pA.y, pB.x, pB.y).first
+fun azimuth(pA : Point, pB: Point ) = azimuth(pA.x, pA.y, pB.x, pB.y).first
 
-fun transformXY(o:GPoint, beta:Double, p:GPoint){
+fun transformXY(o:Point, beta:Double, p:Point){
     val xy = transformXY(o.x, o.y, beta, 1.0, p.x, p.y)
     p.x = xy.first
     p.y = xy.second
@@ -69,7 +68,7 @@ fun transformXY(o:GPoint, beta:Double, p:GPoint){
  * @param p3 末点
  * @return 1 左偏：−1 或 右偏或直线：1
  */
-fun isRight(p1: GPoint, p2: GPoint, p3: GPoint) = if( (p2.y-p1.y)*(p3.x-p2.x) <= (p3.y-p2.y)*(p2.x-p1.x) )
+fun isRight(p1: Point, p2: Point, p3: Point) = if( (p2.y-p1.y)*(p3.x-p2.x) <= (p3.y-p2.y)*(p2.x-p1.x) )
     1
 else  //(p2.y-p1.y)*(p3.x-p2.x) > (p3.y-p2.y)*(p2.x-p1.x)
     -1

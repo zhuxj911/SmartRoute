@@ -9,7 +9,7 @@ import kotlin.math.*
  * @property jd 圆曲线交点
  * @property R 圆曲线半径
  */
-class CircleCurve private constructor(jd: GPoint, radius: Double): Curve(jd, radius) {
+class CircleCurve private constructor(jd: Point, radius: Double): Curve(jd, radius) {
     /**
      * 切线长
      */
@@ -29,9 +29,9 @@ class CircleCurve private constructor(jd: GPoint, radius: Double): Curve(jd, rad
         get() = radius * (1 / cos(alpha * 0.5) - 1)
 
 
-    val zy = GPoint(note ="ZY" )
-    val qz = GPoint(note ="QZ" )
-    val yz = GPoint(note ="YZ" )
+    val zy = Point(note ="ZY" )
+    val qz = Point(note ="QZ" )
+    val yz = Point(note ="YZ" )
 
 
     init {
@@ -39,7 +39,7 @@ class CircleCurve private constructor(jd: GPoint, radius: Double): Curve(jd, rad
     }
 
 
-    constructor(start: GPoint, jd: GPoint, end: GPoint, radius:Double) : this(jd, radius) {
+    constructor(start: Point, jd: Point, end: Point, radius:Double) : this(jd, radius) {
         //判断 start -> JD -> end 是偏右？ 还是 偏左？
         flag = isRight(start, jd, end)
 
@@ -77,7 +77,7 @@ class CircleCurve private constructor(jd: GPoint, radius: Double): Curve(jd, rad
         }
     }
 
-    constructor(start: GPoint, JD: GPoint, radius:Double, alpha : Double) : this(JD, radius) {
+    constructor(start: Point, JD: Point, radius:Double, alpha : Double) : this(JD, radius) {
         flag = if (alpha >= 0.0) 1 else -1
         this.alpha = flag * dmsToRadian(alpha)
 
@@ -132,7 +132,7 @@ class CircleCurve private constructor(jd: GPoint, radius: Double): Curve(jd, rad
      *
      * @param pt 计算点
      */
-    private fun calPointInCurve(pt: GPoint) {
+    private fun calPointInCurve(pt: Point) {
 //        if (pt.kNo < ZY.kNo || pt.kNo > YZ.kNo)
 //            throw RangeException(-1, "计算点的里程桩号:${pt.kNo} 不在该圆曲线的范围内:${ZY.kNo}-${YZ.kNo}")
 
@@ -152,19 +152,19 @@ class CircleCurve private constructor(jd: GPoint, radius: Double): Curve(jd, rad
      * @param kno 里程桩号
      * @return 点坐标
      */
-    override fun calPointOnCurveByKno(kno: Double): GPoint? {
+    override fun calPointOnCurveByKno(kno: Double): Point? {
         if (kno < zy.kNo || kno > yz.kNo) return null //不是圆曲线上有效范围
 
         if (abs(kno - zy.kNo)<=0.01 ) return zy
         if (abs(kno - qz.kNo)<=0.01 ) return qz
         if (abs(kno - yz.kNo)<=0.01 ) return yz
 
-        return GPoint(kNo = kno).also(::calPointInCurve)
+        return Point(kNo = kno).also(::calPointInCurve)
     }
 
 
-    override fun calAllPoints(length: Double): ArrayList<GPoint>{
-        val points = ArrayList<GPoint>()
+    override fun calAllPoints(length: Double): ArrayList<Point>{
+        val points = ArrayList<Point>()
 
         points.add(zy)
 
@@ -172,7 +172,7 @@ class CircleCurve private constructor(jd: GPoint, radius: Double): Curve(jd, rad
         var kno = zy.kNo
         while (kno + length < qz.kNo) {
             kno += length
-            points.add(GPoint(kNo = kno).also(::calPointInCurve))
+            points.add(Point(kNo = kno).also(::calPointInCurve))
         }
 
         points.add(qz)
@@ -181,7 +181,7 @@ class CircleCurve private constructor(jd: GPoint, radius: Double): Curve(jd, rad
         kno = qz.kNo
         while (kno + length < yz.kNo) {
             kno += length
-            points.add(GPoint(kNo = kno).also(::calPointInCurve))
+            points.add(Point(kNo = kno).also(::calPointInCurve))
         }
 
         points.add(yz)
