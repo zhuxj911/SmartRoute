@@ -47,11 +47,10 @@ class CircleCurve private constructor(jd: Point, radius: Double): Curve(jd, radi
         val a12 = azimuth(start, jd)
         alpha0 = a12
         val a23 = azimuth(jd, end)
-        if(flag == 1) {
-            alpha = a23 - a12
-        }
-        else {
-            alpha = a12 - a23
+        alpha = if(flag == 1) {
+            a23 - a12
+        } else {
+            a12 - a23
         }
         if(alpha <0) alpha += 2*PI
 
@@ -77,12 +76,12 @@ class CircleCurve private constructor(jd: Point, radius: Double): Curve(jd, radi
         }
     }
 
-    constructor(start: Point, JD: Point, radius:Double, alpha : Double) : this(JD, radius) {
+    constructor(start: Point, jd: Point, radius:Double, alpha : Double) : this(jd, radius) {
         flag = if (alpha >= 0.0) 1 else -1
         this.alpha = flag * dmsToRadian(alpha)
 
         //计算偏转角
-        val a12 = azimuth(start, JD)
+        val a12 = azimuth(start, jd)
         alpha0 = a12
 
         var a23 = a12 + this.alpha * flag
@@ -90,9 +89,9 @@ class CircleCurve private constructor(jd: Point, radius: Double): Curve(jd, radi
         if(a23 >= 2 * PI) a23 -= 2*PI
 
         with(zy){
-            kNo = JD.kNo - T
-            x = JD.x - T * cos(a12)
-            y = JD.y - T * sin(a12)
+            kNo = jd.kNo - T
+            x = jd.x - T * cos(a12)
+            y = jd.y - T * sin(a12)
             note = "ZY"
         }
 
@@ -105,8 +104,8 @@ class CircleCurve private constructor(jd: Point, radius: Double): Curve(jd, radi
         }
 
         with(yz){
-            x = JD.x + T * cos(a23)
-            y = JD.y + T * sin(a23)
+            x = jd.x + T * cos(a23)
+            y = jd.y + T * sin(a23)
             note = "YZ"
         }
     }
@@ -133,9 +132,6 @@ class CircleCurve private constructor(jd: Point, radius: Double): Curve(jd, radi
      * @param pt 计算点
      */
     private fun calPointInCurve(pt: Point) {
-//        if (pt.kNo < ZY.kNo || pt.kNo > YZ.kNo)
-//            throw RangeException(-1, "计算点的里程桩号:${pt.kNo} 不在该圆曲线的范围内:${ZY.kNo}-${YZ.kNo}")
-
         val alphai = (pt.kNo - zy.kNo) / radius
 
         with(pt){
